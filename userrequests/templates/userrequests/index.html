@@ -1,0 +1,134 @@
+{% extends 'userrequests/base.html' %}
+{% block title %}Your BigDataOcean Requests{% endblock %}
+
+{% block body %}
+
+<div id="container" class="container-fluid text-center">
+    <!-- Displays the Requests Of The Logged In User If Any -->
+    {% if request.user.is_authenticated %}
+        {%  if all_requests|length > 0 %}
+            <h1>On Demand Data Services</h1>
+            <form class="navbar-form" role="search" method="GET" action="#">
+                <div class="form-group  is-empty">
+                    <input type="text" class="form-control border-input" placeholder="Search For A Request" name="q">
+                </div>
+                <button type="submit" class="btn btn-default">
+                    Search
+                    <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                </button>
+            </form>
+
+            <h1>You Have ({{ all_requests|length }}) Requests</h1>
+
+            <div id="open" class="col-sm-5 col-lg-5">
+                <h2>Open({{ open|length }})</h2>
+                {% if open|length > 0 %}
+                    <div class='table-wrapper'>
+                        <table id='opentable' class='table table-hover'>
+                            <tbody id='otbody'>
+                                {% for entry in open %}
+                                    <tr>
+                                        <td>
+                                            <a href="{% url 'userrequests:detail' entry.id %}">
+                                                <h4 class="text-left">{{ forloop.counter }} : {{ entry.title }}</h4>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <p>{{ entry.keywords }}</p>
+                                        </td>
+                                        <td>
+                                            <p>{{ entry.service_description }}</p>
+                                        </td>
+                                        <td>
+                                            <p>{{ entry.service_type }}</p>
+                                        </td>
+                                        <td>
+                                            <a href="{% url 'userrequests:detail' entry.id %}" class="btn btn-primary btn-sm">View Details</a>
+                                        </td>
+                                    </tr>
+                                {%  endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <h4>You Have No Pending Request</h4>
+                {% endif %}
+            </div>
+
+            <div id="closed" class="col-sm-5 col-lg-5">
+                <h2>Closed({{ closed|length }})</h2>
+                {% if closed|length > 0 %}
+                    <div class='table-wrapper'>
+                        <table id='closedtable' class='table table-hover'>
+                            <tbody id='ctbody'>
+                                {% for entry in closed %}
+                                    <tr>
+                                        <td>
+                                            <a href="{% url 'userrequests:detail' entry.id %}">
+                                                <h4 class="text-left">{{ forloop.counter }} : {{ entry.title }}</h4>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <p>{{ entry.keywords }}</p>
+                                        </td>
+                                        <td>
+                                            <p>{{ entry.service_description }}</p>
+                                        </td>
+                                        <td>
+                                            <p>{{ entry.service_type }}</p>
+                                        </td>
+                                        <td>
+                                            <a href="{% url 'userrequests:detail' entry.id %}" class="btn btn-primary btn-sm">View Details</a>
+                                        </td>
+                                    </tr>
+                                {%  endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% elif open|length > 0 and closed|length == 0 %}
+                    <h4>No Request Has Been Answered Yet!</h4>
+                {% else %}
+                    <h4>You Have No Pending Requests</h4>
+                {% endif %}
+            </div>
+            <br>
+
+            <div id="create">
+                <p>Can't Find Anything Relevant?</p>
+                <a href="{% url 'userrequests:create' %}">
+                    <button type="submit" class="btn btn-lg btn-primary">
+                        Create A New Request
+                        <span class="glyphicon glyphicon-check" aria-hidden="true"></span>
+                    </button>
+                </a>
+            </div>
+
+        <!-- Content When User Has No Requests Yet -->
+        {%  else %}
+            <h2>You Have Not Made A Request Yet</h2>
+            <h4>Create A New Now!</h4>
+            <a href="{% url 'userrequests:create' %}">
+                <button type="submit" class="btn btn-lg btn-primary">
+                    Create A Request
+                    <span class="glyphicon glyphicon-check" aria-hidden="true"></span>
+                </button>
+            </a>
+        {%  endif %}
+    <!-- Not Yet Logged In User -->
+    {%  else %}
+        <h1 id="header">User Requests</h1>
+        <h5>In This Page You Can Create A Request, Review The Requests That You Have Already Made (Opened And Closed) And Also Edit Them </h5>
+        <br>
+        <hr>
+        <br>
+        <h2>In Order To Create/Review A Request You Must Log In/Sign Up</h2>
+        <a href="{% url 'userrequests:login' %}">
+            <button type="submit" class="btn btn-lg btn-primary">
+                Login
+                <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>
+            </button>
+        </a>
+    {% endif %}
+</div>
+
+{% endblock %}

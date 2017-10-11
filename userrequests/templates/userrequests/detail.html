@@ -1,0 +1,118 @@
+{% extends 'userrequests/base.html' %}
+
+{% block title %}Request Details{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <h1 class="text-center">On Demand Data Services</h1>
+        <div class="container" id="detailbox">
+            <div class="row">
+                <h2>{{ index.title }}</h2>
+                <hr>
+                <div class="col-sm-7">
+                    <p style="color: grey">{{ index.views }} views/ {{ index.downloads }} downloads</p>
+                    <img src="{{ index.file }}" width="100px" height="100px">
+                    <h4>Provider : {{ index.provider }}</h4>
+                    <h3>Keywords : {{ index.keywords }}</h3>
+                    <h4>Service Description : {{ index.service_description }}</h4>
+                    <h6>Service Type : {{ index.service_type }}</h6>
+                </div>
+
+                <div class="col-sm-3">
+                    <a href="#">
+                        <button type="submit" class="btn btn-default">
+                            Contact the Provider
+                            <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
+                        </button>
+                    </a>
+                    <h5>Category Type : {{ index.category_type }}</h5>
+                    <h3>DeadLine : {{ index.deadline }}</h3>
+                    <h3>Budget : {{ index.budget }}</h3>
+                    <h4>Answered : {{ index.closed }}</h4>
+                </div>
+            </div>
+            <div class="col-sm-offset-5">
+                <a id="update" href="{% url 'userrequests:update' index.id %}">
+                    <button type="submit" class="btn btn-lg btn-primary">
+                        Update Request
+                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                    </button>
+                </a>
+            </div>
+        </div>
+        <br>
+        <div class="container-fluid">
+            <div id="prev" class="col-sm-5">
+                {% if prev|length > 0 %}
+                    <h3 class="text-center">Your Previous Requests</h3>
+                    <div id="prevt" class='table-wrapper'>
+                        <table id='previous' class='table table-hover'>
+                            <tbody id='otbody'>
+                                {% for entry in prev %}
+                                    {% if entry.id != index.id %}
+                                        <tr>
+                                            <td>
+                                                <a href="{% url 'userrequests:detail' entry.id %}">
+                                                    <h4>{{ entry.title }}</h4>
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <p>{{ entry.keywords }}</p>
+                                            </td>
+                                            <td>
+                                                <p>{{ entry.service_description }}</p>
+                                            </td>
+                                            <td>
+                                                {% if entry.closed %}
+                                                    <span class="glyphicon glyphicon-ok-circle"></span></p>
+                                                {% else %}
+                                                    <span class="glyphicon glyphicon-time"></span></p>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endif %}
+                                {%  endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <h3 class="text-center">You Have Not Other Requests</h3>
+                {% endif %}
+            </div>
+            <div class="col-sm-5">
+                {% if related|length > 0 %}
+                    <h3 class="text-center">Related Requests ({{ related|length }})</h3>
+                    <div id="relatedt" class='table-wrapper'>
+                        <table id='related' class='table table-hover'>
+                            <tbody id='otbody'>
+                                {% for entry in related %}
+                                    {% if entry.id != index.id %}
+                                        <tr>
+                                            <td>
+                                                <a href="{% url 'userrequests:detail' entry.id %}">
+                                                    <h4>{{ entry.title }}</h4>
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <p>{{ entry.keywords }}</p>
+                                            </td>
+                                            <td>
+                                                <p>{{ entry.service_description }}</p>
+                                            </td>
+                                            <td>
+                                                <p>{{ entry.service_type }}</p>
+                                            </td>
+                                        </tr>
+                                    {% endif %}
+                                {%  endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <h3 class="text-center">We Have Not Found A Common Request</h3>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

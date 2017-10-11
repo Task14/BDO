@@ -1,0 +1,95 @@
+body {
+    background-color: white;
+}
+body > h1{
+    color: white;
+}
+/* Set height of the grid so .sidenav can be 100% (adjust as needed) */
+
+.row.content {
+    height: 1000px;
+}
+
+#container:before{
+	content: ' ';
+  	display: block;
+  	height: 100px;
+}
+
+#open{
+    height:400px;
+}
+#closed{
+    height:400px;
+}
+
+#prev {
+  border-right: solid 1px #000000;
+}
+
+/* Set gray background color and 100% height */
+.sidenav {
+  background-color: #f1f1f1;
+  height: 100%;
+}
+
+.table-fixed tbody {
+  height: 300px;
+  overflow-y: auto;
+  width: 100%;
+}
+.table-fixed tbody, .table-fixed tr, .table-fixed td, .table-fixed th {
+  display: block;
+}
+.table-fixed tbody td{
+  float: left;
+  border-bottom-width: 0;
+}
+
+table {
+	border-collapse:collapse;
+	width: 80%;
+}
+table, td {
+  	background: white;
+}
+
+td {
+	min-width: 90%;
+}
+tbody{
+	max-height:10px;
+	overflow: scroll;
+}
+
+.table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
+        background-color: #99FFCC;
+}
+
+.table-wrapper{
+	overflow-y: scroll;
+	max-height:300px;
+}
+
+#prevt{
+    overflow-y: scroll;
+    max-height:200px;
+}
+
+#relatedt{
+	overflow-y: scroll;
+	max-height:200px;
+}
+
+#detailbox{
+    border-radius: 25px;
+    border: 2px solid darkgrey;
+    padding: 20px;
+    width: 82%;
+    overflow: auto;
+}
+
+/* On small screens, set height to 'auto' for the grid */
+@media screen and (max-width: 767px) {
+  .row.content {height: auto;}
+}
