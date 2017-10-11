@@ -81,7 +81,7 @@
             <div class="row content">
 
                 <!-- navigation bar viewable when window is in it's original size -->
-                <div class="col-sm-2 sidenav hidden-xs">
+                <div id="verticalnav" class="col-sm-2 sidenav hidden-xs">
                     <br>
                     <a href="{% url 'userrequests:index' %}">
                         <img src="{% static 'images/logo.png' %}" style="width:150px; height: auto;" alt="LOGO">
@@ -111,7 +111,7 @@
                     </ul>
                 </div>
 
-                <div class="col-sm-10">
+                <div id="horizontalnav" class="col-sm-10">
                     <!-- The Horizontal navigation bar -->
                     <nav class="navbar navbar-transparent navbar-absolute">
                         <div class="container-fluid">

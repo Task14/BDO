@@ -62,7 +62,7 @@ class Detail(APIView):
         entry = self.get_object(pk)
         user = self.request.user
         serializer = UserRequestsSerializer(entry)
-        prev = UserRequests.objects.filter(user=user, closed=False)
+        prev = UserRequests.objects.filter(user=user)
         prevser = UserRequestsSerializer(prev, many=True)
         related = None
         relatedser = UserRequestsSerializer(related, many=True)
