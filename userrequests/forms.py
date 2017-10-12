@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django import forms
+from django.forms import Textarea
 from .models import UserRequests
 
 
@@ -22,3 +23,8 @@ class RequestForm(forms.ModelForm):
     class Meta:
         model = UserRequests
         exclude = ['user', 'views', 'downloads']
+        widgets = {
+            'keywords': Textarea(attrs={'cols': 50, 'rows': 3, 'style': 'resize:none;'}),
+            'service_description': Textarea(attrs={'cols': 50, 'rows': 5, 'style': 'resize:none;'}),
+        }
+

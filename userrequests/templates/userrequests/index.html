@@ -25,6 +25,14 @@
                 {% if open|length > 0 %}
                     <div class='table-wrapper'>
                         <table id='opentable' class='table table-hover'>
+                            <thead>
+                                <tr>
+                                    <th><b>Title</b></th>
+                                    <th><b>Keywords</b></th>
+                                    <th><b>Service Description</b></th>
+                                    <th><b>Service Type</b></th>
+                                </tr>
+                            </thead>
                             <tbody id='otbody'>
                                 {% for entry in open %}
                                     <tr>
@@ -60,6 +68,14 @@
                 {% if closed|length > 0 %}
                     <div class='table-wrapper'>
                         <table id='closedtable' class='table table-hover'>
+                            <thead>
+                                <tr>
+                                    <th><b>Title</b></th>
+                                    <th><b>Keywords</b></th>
+                                    <th><b>Service Description</b></th>
+                                    <th><b>Service Type</b></th>
+                                </tr>
+                            </thead>
                             <tbody id='ctbody'>
                                 {% for entry in closed %}
                                     <tr>

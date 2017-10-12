@@ -11,22 +11,28 @@
                 <hr>
                 <div class="col-sm-7">
                     <p style="color: grey">{{ index.views }} views/ {{ index.downloads }} downloads</p>
-                    <img src="{{ index.file }}" width="100px" height="100px" alt="No File Has Been Uploaded">
-                    <h4>Provider : {{ index.provider }}</h4>
-                    <h3>Keywords : {{ index.keywords }}</h3>
-                    <h4>Service Description : {{ index.service_description }}</h4>
-                    <h6>Service Type : {{ index.service_type }}</h6>
+                    <img src="{{ index.file }}" width="100px" height="100px" alt="No File Has Been Uploaded" style="color: brown; float: left; margin-right: 40px;">
+                    <p style="display: inline">
+                        <h4>Provider : {{ index.provider }}</h4>
+                        <h5>Service Type : {{ index.service_type }}</h5>
+                    </p>
+                    <br style="clear: both">
+                    <h3>Keywords : </h3>
+                    <textarea rows="2" cols="50" style="resize: none" disabled>{{ index.keywords }}</textarea>
+                    <h4>Service Description : </h4>
+                    <textarea rows="3" cols="50" style="resize: none;" disabled>{{ index.service_description }}</textarea>
+
                 </div>
 
                 <div class="col-sm-3">
                     <a href="#">
                         <button type="submit" class="btn btn-default">
                             Contact the Provider
-                            <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
+                            <span class="glyphicon glyphicon-envelope" style="color: darkcyan" aria-hidden="true"></span>
                         </button>
                     </a>
                     <h5>Category Type : {{ index.category_type }}</h5>
-                    <h3>DeadLine : {{ index.deadline }}</h3>
+                    <h3>DeadLine : <span style="color: darkred;">{{ index.deadline }}</span></h3>
                     <h3>Budget : {{ index.budget }}</h3>
                     <h4>Answered : {{ index.closed }}</h4>
                 </div>
