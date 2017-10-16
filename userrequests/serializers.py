@@ -16,7 +16,7 @@ class UserRequestsSerializer(serializers.ModelSerializer):
     provider = serializers.SerializerMethodField()
     category_type = serializers.SerializerMethodField()
     service_type = serializers.SerializerMethodField()
-    file = serializers.FileField(max_length=None, use_url=True, validators=[validate_file_extension],required=False)
+    file = serializers.FileField(max_length=None, use_url=True, validators=[validate_file_extension], required=False)
 
     class Meta:
         model = UserRequests

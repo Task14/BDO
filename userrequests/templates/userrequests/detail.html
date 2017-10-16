@@ -70,9 +70,9 @@
                                             </td>
                                             <td>
                                                 {% if entry.closed %}
-                                                    <span class="glyphicon glyphicon-ok" style="color: green"></span></p>
+                                                    <span class="glyphicon glyphicon-ok" style="color: green; float: right;"></span></p>
                                                 {% else %}
-                                                    <span class="glyphicon glyphicon-time" style="color: blue"></span></p>
+                                                    <span class="glyphicon glyphicon-time" style="color: blue; float: right;"></span></p>
                                                 {% endif %}
                                             </td>
                                         </tr>
@@ -107,6 +107,13 @@
                                             </td>
                                             <td>
                                                 <p>{{ entry.service_type }}</p>
+                                            </td>
+                                            <td>
+                                                {% if entry.closed %}
+                                                    <span class="glyphicon glyphicon-ok" style="color: green; float: right;"></span></p>
+                                                {% else %}
+                                                    <span class="glyphicon glyphicon-time" style="color: blue; float: right;"></span></p>
+                                                {% endif %}
                                             </td>
                                         </tr>
                                     {% endif %}

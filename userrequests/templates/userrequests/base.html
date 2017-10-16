@@ -169,8 +169,8 @@
                                                 </li>
                                                 <li>
                                                     <a href="{% url 'userrequests:user-logout' %}">
-                                                        <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
                                                         Logout
+                                                        <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
                                                     </a>
                                                 </li>
                                             </ul>
@@ -179,13 +179,13 @@
                                     <li>
                                         {% if request.user.is_authenticated %}
                                             <a href="{% url 'userrequests:user-logout' %}">
-                                                <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
                                                 Logout
+                                                <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
                                             </a>
                                         {% else %}
                                             <a href="{% url 'userrequests:login' %}">
-                                                <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>
                                                 Login
+                                                <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>
                                             </a>
                                         {% endif %}
                                     </li>

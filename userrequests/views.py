@@ -51,6 +51,7 @@ class IndexList(APIView):
 class Detail(APIView):
     template_name = "userrequests/detail.html"
     renderer_classes = (TemplateHTMLRenderer,)
+    entry = UserRequests
 
     def get_object(self, pk):
         try:
@@ -58,15 +59,31 @@ class Detail(APIView):
         except UserRequests.DoesNotExist:
             raise Http404
 
+    def get_keywords(self, keywords):
+        keys_list = []
+        try:
+            keys_list = keywords.split(',')
+            return keys_list
+        except UserRequests.DoesNotExist:
+            raise Http404
+
+
     def get(self, request, pk):
         entry = self.get_object(pk)
         user = self.request.user
         serializer = UserRequestsSerializer(entry)
         prev = UserRequests.objects.filter(user=user)
         prevser = UserRequestsSerializer(prev, many=True)
-        related = None
-        relatedser = UserRequestsSerializer(related, many=True)
-        return Response({'index': serializer.data, 'prev': prevser.data, 'related': relatedser.data},
+        list = self.get_keywords(entry.keywords)
+        related = []
+        for key in list:
+            current_results = UserRequests.objects.filter(keywords__icontains=key).exclude(pk=entry.pk)
+            relatedser = UserRequestsSerializer(current_results, many=True)
+            related += relatedser.data
+
+        #related = UserRequests.objects.filter(keywords__icontains=entry.keywords).exclude(pk=entry.pk)
+
+        return Response({'index': serializer.data, 'prev': prevser.data, 'related': related},
                         template_name="detail.html")
         #return render(request, self.template_name,
          #             {'index': serializer.data, 'prev': prevser.data, 'related': relatedser.data})
