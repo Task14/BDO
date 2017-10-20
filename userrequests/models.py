@@ -40,3 +40,20 @@ class UserRequests(models.Model):
     def __str__(self):
         return self.title
 
+class Messages(models.Model):
+
+    userreq = models.ForeignKey(User, related_name='requested_user')
+    userpost = models.ForeignKey(User, related_name='replied_user')
+    requestid = models.ForeignKey(UserRequests)
+    message = models.TextField(max_length=500)
+    date = models.DateTimeField(auto_now_add=True, blank=False)
+    upvotes = models.IntegerField(default=0)
+    downvotes = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.message + " by: " + self.userpost
+
+class MessageNotify(models.Model):
+
+    userid = models.ForeignKey(User, related_name='notified_user')
+    messageid = models.ForeignKey(Messages)

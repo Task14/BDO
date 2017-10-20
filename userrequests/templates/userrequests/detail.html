@@ -7,7 +7,13 @@
         <h1 class="text-center">On Demand Data Services</h1>
         <div class="container" id="detailbox">
             <div class="row">
-                <h2>{{ index.title }}</h2>
+                <h2 style="display: inline;">{{ index.title }}</h2>
+                <a style="float: right; display: inline; margin-right: 20px;" href="{% url 'userrequests:reqdiscusion' index.id %}">
+                    <button type="submit" class="btn btn-success">
+                        View Discussion
+                        <span class="glyphicon glyphicon-edit" style="color: white" aria-hidden="true"></span>
+                    </button>
+                </a>
                 <hr>
                 <div class="col-sm-7">
                     <p style="color: grey">{{ index.views }} views/ {{ index.downloads }} downloads</p>
@@ -37,14 +43,18 @@
                     <h4>Answered : {{ index.closed }}</h4>
                 </div>
             </div>
-            <div class="col-sm-offset-5">
-                <a id="update" href="{% url 'userrequests:update' index.id %}">
-                    <button type="submit" class="btn btn-lg btn-primary">
-                        Update Request
-                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-                    </button>
-                </a>
-            </div>
+            {% if request.user.is_authenticated %}
+                {% if request.user.id == index.user.id %}
+                    <div class="col-sm-offset-5">
+                        <a id="update" href="{% url 'userrequests:update' index.id %}">
+                            <button type="submit" class="btn btn-lg btn-primary">
+                                Update Request
+                                <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                            </button>
+                        </a>
+                    </div>
+                {% endif %}
+            {% endif %}
         </div>
         <br>
         <div class="container-fluid">
@@ -66,7 +76,7 @@
                                                 <p>{{ entry.keywords }}</p>
                                             </td>
                                             <td>
-                                                <p>{{ entry.service_description }}</p>
+                                                <p>{{ entry.deadline }}</p>
                                             </td>
                                             <td>
                                                 {% if entry.closed %}
@@ -90,7 +100,7 @@
                     <h3 class="text-center">Related Requests ({{ related|length }})</h3>
                     <div id="relatedt" class='table-wrapper'>
                         <table id='related' class='table table-hover'>
-                            <tbody id='otbody'>
+                            <tbody id='rtbody'>
                                 {% for entry in related %}
                                     {% if entry.id != index.id %}
                                         <tr>
@@ -103,10 +113,7 @@
                                                 <p>{{ entry.keywords }}</p>
                                             </td>
                                             <td>
-                                                <p>{{ entry.service_description }}</p>
-                                            </td>
-                                            <td>
-                                                <p>{{ entry.service_type }}</p>
+                                                <p>{{ entry.user.username }}</p>
                                             </td>
                                             <td>
                                                 {% if entry.closed %}

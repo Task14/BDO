@@ -8,9 +8,9 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.http import Http404
-from .models import UserRequests
-from .forms import UserForm, UserLoginForm, RequestForm
-from .serializers import UserRequestsSerializer
+from .models import UserRequests, Messages
+from .forms import UserForm, UserLoginForm, RequestForm, MessageForm
+from .serializers import UserRequestsSerializer, MessagesSerializer, MessageNotifySerializer
 from django.contrib.auth import authenticate, login, logout
 from django.views import generic
 from django.shortcuts import redirect
@@ -67,6 +67,13 @@ class Detail(APIView):
         except UserRequests.DoesNotExist:
             raise Http404
 
+    def clear_duplicates(self, list):
+        clear_list = []
+        for entry in list:
+            if entry not in clear_list:
+                clear_list.append(entry)
+        return clear_list
+
 
     def get(self, request, pk):
         entry = self.get_object(pk)
@@ -80,7 +87,7 @@ class Detail(APIView):
             current_results = UserRequests.objects.filter(keywords__icontains=key).exclude(pk=entry.pk)
             relatedser = UserRequestsSerializer(current_results, many=True)
             related += relatedser.data
-
+        related = self.clear_duplicates(related)
         #related = UserRequests.objects.filter(keywords__icontains=entry.keywords).exclude(pk=entry.pk)
 
         return Response({'index': serializer.data, 'prev': prevser.data, 'related': related},
@@ -101,6 +108,25 @@ class Detail(APIView):
         snippet.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+class SearchView(APIView):
+    template_name = "userrequests/searchres.html"
+    renderer_classes = (TemplateHTMLRenderer,)
+
+    def get_object(self, title):
+        try:
+            return UserRequests.objects.filter(title=title)
+        except UserRequests.DoesNotExist:
+            return None
+
+    def get(self, request):
+        title = request.GET['title']
+        results = self.get_object(title)
+        resser = UserRequestsSerializer(results, many=True)
+
+        return Response({'results': resser.data}, template_name="searchres.html")
+
+
+
 class Create(APIView):
     template_name = "userrequests/userrequests_form.html"
     renderer_classes = (TemplateHTMLRenderer,)
@@ -115,7 +141,7 @@ class Create(APIView):
 
     def get(self, request):
         form = self.form_class(None)
-        return Response({'form': form}, template_name="userrequests_form.html")
+        return Response({'form': form, 'entry': None}, template_name="userrequests_form.html")
         #return render(request, self.template_name, {'form': form})
 
     def post(self, request, format=None):
@@ -123,7 +149,8 @@ class Create(APIView):
 
         if form.is_valid():
             entry = form.save(commit=False)
-            serializer = UserRequestsSerializer(data=request.data)
+            data = request.data
+            serializer = UserRequestsSerializer(data=data, context={'request': request})
             serializer.user = self.request.user  # use your own profile here
             serializer.file = self.request.FILES
             if serializer.is_valid():
@@ -131,10 +158,10 @@ class Create(APIView):
                 return redirect('userrequests:detail', entry.id)
             error_message = serializer.errors
             #return render(request, self.template_name, {'form': form, 'error_message': error_message, 'entry': request.data})
-            return Response({'form': form, 'error_message': error_message, 'entry': request.data},
+            return Response({'form': form, 'error_message': error_message, 'entry': None},
                                           template_name="userrequests_form.html")
         error_message = "Form Not Valid. Please Retry"
-        return Response({'form': form, 'error_message': error_message, 'entry': request.data},
+        return Response({'form': form, 'error_message': error_message, 'entry': None},
                         template_name="userrequests_form.html")
         #return render(request, self.template_name, {'form': form, 'error_message': error_message, 'entry': request.data})
 
@@ -154,14 +181,14 @@ class Update(APIView):
     def get(self, request, pk):
         entry = self.get_object(pk)
         form = self.form_class(instance=entry)
-        return Response({'form': form, 'request': entry}, template_name="userrequests_form.html")
+        return Response({'form': form, 'entry': entry}, template_name="userrequests_form.html")
 
     def post(self, request, pk, format=None):
         entry = self.get_object(pk=pk)
         form = self.form_class(request.POST, request.FILES, instance=entry)
 
         if form.is_valid():
-            serializer = UserRequestsSerializer(entry, data=request.data)
+            serializer = UserRequestsSerializer(entry, data=request.data, context={'request': request})
             serializer.user = self.request.user  # use your own profile here
             serializer.file = entry.file
 
@@ -176,6 +203,55 @@ class Update(APIView):
         return Response({'form': form, 'error_message': error_message, 'entry': request.data},
                         template_name="userrequests_form.html")
         #return render(request, self.template_name, {'form': form, 'error_message': error_message, 'entry': request.data})
+
+class Discussion(APIView):
+
+    template_name = 'userrequests/reqdiscussion.html'
+    renderer_classes = (TemplateHTMLRenderer,)
+    parser_classes = (FormParser, MultiPartParser)
+    form_class = MessageForm
+
+    def get_messages(self,pk):
+        try:
+            return Messages.objects.filter(requestid=pk).order_by('date')
+        except Messages.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk):
+        results = self.get_messages(pk)
+        req = UserRequests.objects.get(pk=pk)
+        reqser = UserRequestsSerializer(req)
+        resser = MessagesSerializer(results, many=True)
+        return Response({'entry': reqser.data, 'messages': resser.data}, template_name="reqdiscussion.html")
+
+    def post(self, request, pk):
+        message = self.form_class(request.POST)
+        req = UserRequests.objects.get(pk=pk)
+
+        if message.is_valid():
+            data = {'message': request.POST['message'], 'requestid': req.pk, 'userreq': req.user.pk,
+                    'userpost': self.request.user}
+            notify = {'userid': req.user.pk, 'messageid': req.id}
+            serializer = MessagesSerializer(data=data, context={'request': request})
+            serializer.userreq = req.user
+            if serializer.is_valid():
+                serializer.save(userreq=req.user)
+                if req.user.pk != request.user.pk:
+                    notifyserializer = MessageNotifySerializer(data=notify)
+                    if notifyserializer.is_valid():
+                        notifyserializer.save()
+
+                return redirect('userrequests:reqdiscusion', req.id)
+            error_message = serializer.errors
+
+            #return redirect('userrequests:reqdiscusion', entry.id)
+            return Response({'error_message': error_message, 'messages': request.data},
+                                          template_name="reqdiscussion.html")
+        error_message = "Form Not Valid. Please Retry"
+
+        #return redirect('userrequests:reqdiscusion', entry.id)
+        return Response({'error_message': error_message, 'messages': request.data},
+                        template_name="reqdiscussion.html")
 
 
 class UserLogin(generic.View):

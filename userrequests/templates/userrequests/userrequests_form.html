@@ -7,25 +7,43 @@
 	<div class="row">
 		<div class="col-sm-10 ">
              {% if request.user.is_authenticated %}
-                <div class="panel panel-default">
-                    <div class="panel-body">
-                        <h2>Submit Your Request</h2>
-                        <hr>
-                        {% if error_message %}
-                            <p style="color:red;"><strong>{{ error_message }}</strong></p>
-                        {% endif %}
-                        <form class="form-horizontal" role="form" action="" method="post" enctype="multipart/form-data">
-                            {% csrf_token %}
-                            {% include 'userrequests/form-template.html' %}
-                            <div class="form-group">
-                                <div class="col-sm-offset-5">
-                                    <button type="submit" class="btn btn-success">Submit</button>
-                                    <button type="reset" class="btn btn-danger">Clear</button>
+                 {% if entry != None and request.user.id != entry.user.id %}
+                     <div class="panel panel-default">
+                        <div class="panel-body">
+                            {% if error_message %}
+                                <p style="color:red;"><strong>{{ error_message }}</strong></p>
+                            {% endif %}
+                            <h3>You Have No Right To Make Changes To This Request</h3>
+                            <a href="#">
+                                <div class="form-group">
+                                    <div class="col-sm-offset-5 col-sm-10">
+                                        <button type="submit" class="btn btn-log-in">Back To Request</button>
+                                    </div>
                                 </div>
-                            </div>
-                        </form>
+                             </a>
+                        </div>
+                     </div>
+                 {% else %}
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <h2>Submit Your Request</h2>
+                            <hr>
+                            {% if error_message %}
+                                <p style="color:red;"><strong>{{ error_message }}</strong></p>
+                            {% endif %}
+                            <form class="form-horizontal" role="form" action="" method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                {% include 'userrequests/form-template.html' %}
+                                <div class="form-group">
+                                    <div class="col-sm-offset-5">
+                                        <button type="submit" class="btn btn-success">Submit</button>
+                                        <button type="reset" class="btn btn-danger">Clear</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
                     </div>
-                </div>
+                 {% endif %}
              {% else %}
                  <h1 class="text-center">You Must Login In  Order To Create A Request</h1>
                  <a href="{% url 'userrequests:login' %}">

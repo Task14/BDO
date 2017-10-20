@@ -1,7 +1,8 @@
 from django.contrib.auth.models import User
 from django import forms
 from django.forms import Textarea
-from .models import UserRequests
+from .models import UserRequests, Messages
+from django.conf import settings
 
 
 
@@ -28,3 +29,9 @@ class RequestForm(forms.ModelForm):
             'service_description': Textarea(attrs={'cols': 50, 'rows': 5, 'style': 'resize:none;'}),
         }
 
+
+class MessageForm(forms.ModelForm):
+
+    class Meta:
+        model = Messages
+        fields = ['message']

@@ -1,6 +1,5 @@
 from rest_framework import serializers
-from .models import UserRequests
-
+from .models import UserRequests, Messages, MessageNotify
 
 def validate_file_extension(value):
     import os
@@ -17,10 +16,11 @@ class UserRequestsSerializer(serializers.ModelSerializer):
     category_type = serializers.SerializerMethodField()
     service_type = serializers.SerializerMethodField()
     file = serializers.FileField(max_length=None, use_url=True, validators=[validate_file_extension], required=False)
+    user = serializers.ReadOnlyField(default=serializers.CurrentUserDefault())
 
     class Meta:
         model = UserRequests
-        exclude = ['user']
+        fields = '__all__'
 
     def get_provider(self, obj):
         return obj.get_provider_display()
@@ -30,3 +30,23 @@ class UserRequestsSerializer(serializers.ModelSerializer):
 
     def get_service_type(self, obj):
         return obj.get_service_type_display()
+
+
+    def validate_user(self, obj):
+        obj.user = self.context['request'].user
+
+
+class MessagesSerializer(serializers.ModelSerializer):
+
+    userpost = serializers.ReadOnlyField(default=serializers.CurrentUserDefault())
+    date = serializers.DateTimeField(format="%H:%M %d-%b-%Y", required=False)
+
+    class Meta:
+        model = Messages
+        fields = '__all__'
+
+class MessageNotifySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = MessageNotify
+        fields = '__all__'
