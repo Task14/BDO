@@ -5,6 +5,13 @@
 {% block body %}
 
     <div class="container-fluid">
+
+        <ul class="breadcrumb">
+            <li><a href="{% url 'userrequests:index' %}">Requests</a></li>
+            <li><a href="{% url 'userrequests:detail' entry.id %}">{{ entry.title }}</a></li>
+            <li><a href="#">Discussion</a></li>
+        </ul>
+
         <div class="container" id="messagebox">
             <h2 id="request_header" style="display:inline;">{{ entry.title }}: {{ entry.service_description }}</h2>
             <h4 style="display: inline; float: right">
@@ -31,8 +38,8 @@
                                             <p>{{ msg.upvotes }} upvotes <br>{{ msg.downvotes }} downvotes</p>
                                             <span class="glyphicon glyphicon-thumbs-up"></span>/
                                             <span class="glyphicon glyphicon-thumbs-down"></span>
-                                            {% if msg.userreq == request.user.pk and msg.userpost.pk != request.user.pk and entry.closed == False %}
-                                                <a href="#">
+                                            {% if msg.userreq == request.user.username and msg.userpost != request.user.username and entry.closed == False %}
+                                                <a href="{% url 'userrequests:closereq' msg.requestid %}">
                                                     <button type="submit" class="btn btn-default">
                                                         Accept Answer
                                                         <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>

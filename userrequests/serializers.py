@@ -33,7 +33,7 @@ class UserRequestsSerializer(serializers.ModelSerializer):
 
 
     def validate_user(self, obj):
-        obj.user = self.context['request'].user
+        obj.user = self.context['request'].user.username
 
 
 class MessagesSerializer(serializers.ModelSerializer):

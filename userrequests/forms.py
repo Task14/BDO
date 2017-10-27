@@ -21,9 +21,11 @@ class UserLoginForm(forms.Form):
 
 class RequestForm(forms.ModelForm):
     file = forms.FileField(required=False)
+    deadline = forms.DateField(widget=forms.widgets.DateInput(attrs={'type': 'date'}))
+
     class Meta:
         model = UserRequests
-        exclude = ['user', 'views', 'downloads']
+        exclude = ['user', 'views', 'downloads', 'closed']
         widgets = {
             'keywords': Textarea(attrs={'cols': 50, 'rows': 3, 'style': 'resize:none;'}),
             'service_description': Textarea(attrs={'cols': 50, 'rows': 5, 'style': 'resize:none;'}),

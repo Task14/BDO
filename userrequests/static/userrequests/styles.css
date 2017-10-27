@@ -6,21 +6,25 @@ body > h1{
 }
 /* Set height of the grid so .sidenav can be 100% (adjust as needed) */
 
-.row.content {
+.row.content{
     height: 1000px;
 }
 
-#container:before{
-	content: ' ';
-  	display: block;
-  	height: 100px;
+#topcontainer{
+    width: 100%;
+    height: 480px;
+    !important;
+    margin: auto;
+    background-color: white;
 }
 
-#open{
-    height:400px;
+#central{
+    background-color: white;
 }
-#closed{
-    height:400px;
+
+#tabs{
+    height: 450px;
+    overflow: auto;
 }
 
 #prev {
@@ -29,21 +33,26 @@ body > h1{
 
 /* Set gray background color and 100% height */
 .sidenav {
-  background-color: #f1f1f1;
-  height: 100%;
+    background: #f1f1f1; /* For browsers that do not support gradients */
+    background: -webkit-linear-gradient(#f1f1f1, #ffffff); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(#f1f1f1, #ffffff); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(#f1f1f1, #ffffff); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(#f1f1f1, #ffffff); /* Standard syntax */
+    height: 100%;
+    min-width: 200px;
 }
 
 .table-fixed tbody {
-  height: 300px;
-  overflow-y: auto;
-  width: 100%;
+    height: 300px;
+    overflow-y: auto;
+    width: 100%;
 }
 .table-fixed tbody, .table-fixed tr, .table-fixed td, .table-fixed th {
-  display: block;
+    display: block;
 }
 .table-fixed tbody td{
-  float: left;
-  border-bottom-width: 0;
+    float: left;
+    border-bottom-width: 0;
 }
 
 table {
@@ -55,8 +64,33 @@ table, td {
   	background: white;
 }
 
+.primary{
+    width: 40%;
+}
+
+.secondary{
+    width: 20%;
+}
+
+.btn-info {
+    text-transform:uppercase;
+    padding:5px;
+    display: inline-block;
+}
+
+input{
+  border-radius:10px;
+}
+textarea{
+  border-radius:10px;
+}
+
+select{
+  border-radius:10px;
+}
+
 td {
-    width:20%;
+
     overflow-x: auto;
 }
 tbody{
@@ -65,21 +99,21 @@ tbody{
 }
 
 .table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
-        background-color: #99FFCC;
+    background-color: #99FFCC;
 }
 
 .table-wrapper{
-	overflow-y: scroll;
+	overflow-y: auto;
 	max-height:300px;
 }
 
 #prevt{
-    overflow-y: scroll;
+    overflow-y: auto;
     max-height:200px;
 }
 
 #relatedt{
-	overflow-y: scroll;
+	overflow-y: auto;
 	max-height:200px;
 }
 
@@ -89,6 +123,42 @@ tbody{
     padding: 20px;
     width: 82%;
     overflow: auto;
+}
+
+#messagebox{
+    border-radius: 25px;
+    border: 0px solid;
+    padding: 20px;
+    width: 82%;
+    overflow: auto;
+}
+
+#messaget{
+    overflow-y: auto;
+    height: 200px;
+}
+
+ul.breadcrumb {
+    padding: 10px 16px;
+    list-style: none;
+    background-color: transparent;
+}
+ul.breadcrumb li {
+    display: inline;
+    font-size: 15px;
+}
+ul.breadcrumb li+li:before {
+    padding: 8px;
+    color: black;
+    content: "/\00a0";
+}
+ul.breadcrumb li a {
+    color: #0275d8;
+    text-decoration: none;
+}
+ul.breadcrumb li a:hover {
+    color: #01447e;
+    text-decoration: underline;
 }
 
 /* On small screens, set height to 'auto' for the grid */

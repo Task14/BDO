@@ -22,7 +22,7 @@ class UserRequests(models.Model):
         ('EX', 'EXHILE'),
         ('AL', 'Every BDO Provider'),
     )
-    user = models.ForeignKey(User)
+    user = models.CharField(max_length=20)
     title = models.CharField(max_length=50)
     keywords = models.TextField(max_length=500)
     service_description = models.TextField(max_length=500)
@@ -42,8 +42,8 @@ class UserRequests(models.Model):
 
 class Messages(models.Model):
 
-    userreq = models.ForeignKey(User, related_name='requested_user')
-    userpost = models.ForeignKey(User, related_name='replied_user')
+    userreq = models.CharField(max_length=20)
+    userpost = models.CharField(max_length=20)
     requestid = models.ForeignKey(UserRequests)
     message = models.TextField(max_length=500)
     date = models.DateTimeField(auto_now_add=True, blank=False)
@@ -55,5 +55,5 @@ class Messages(models.Model):
 
 class MessageNotify(models.Model):
 
-    userid = models.ForeignKey(User, related_name='notified_user')
+    user = models.CharField(max_length=20)
     messageid = models.ForeignKey(Messages)

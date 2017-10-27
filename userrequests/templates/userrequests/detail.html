@@ -4,6 +4,12 @@
 
 {% block body %}
     <div class="container-fluid">
+
+        <ul class="breadcrumb">
+            <li><a href="{% url 'userrequests:index' %}">Requests</a></li>
+            <li><a href="#">{{ index.title }}</a></li>
+        </ul>
+
         <h1 class="text-center">On Demand Data Services</h1>
         <div class="container" id="detailbox">
             <div class="row">
@@ -44,7 +50,7 @@
                 </div>
             </div>
             {% if request.user.is_authenticated %}
-                {% if request.user.id == index.user.id %}
+                {% if request.user.username == index.user %}
                     <div class="col-sm-offset-5">
                         <a id="update" href="{% url 'userrequests:update' index.id %}">
                             <button type="submit" class="btn btn-lg btn-primary">
@@ -113,7 +119,7 @@
                                                 <p>{{ entry.keywords }}</p>
                                             </td>
                                             <td>
-                                                <p>{{ entry.user.username }}</p>
+                                                <p>{{ entry.user }}</p>
                                             </td>
                                             <td>
                                                 {% if entry.closed %}

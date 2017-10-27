@@ -3,11 +3,12 @@ from __future__ import unicode_literals
 
 from django.shortcuts import get_object_or_404
 from rest_framework.parsers import MultiPartParser, FormParser
-from rest_framework.renderers import TemplateHTMLRenderer
+from rest_framework.renderers import TemplateHTMLRenderer, JSONRenderer
+from rest_framework.utils import json
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from django.http import Http404
+from django.http import Http404, JsonResponse, HttpResponse
 from .models import UserRequests, Messages
 from .forms import UserForm, UserLoginForm, RequestForm, MessageForm
 from .serializers import UserRequestsSerializer, MessagesSerializer, MessageNotifySerializer
@@ -27,13 +28,12 @@ class IndexList(APIView):
     def get(self, request):
         user = self.request.user
         if user.is_authenticated:
-            all_requests = UserRequests.objects.filter(user=user)
-            serializer = UserRequestsSerializer(all_requests, many=True)
-            open = UserRequests.objects.filter(user=user, closed=False)
+            open = UserRequests.objects.filter(closed=False).order_by('-deadline')
             openser = UserRequestsSerializer(open, many=True)
-            closed = UserRequests.objects.filter(user=user, closed=True)
+            closed = UserRequests.objects.filter(closed=True).order_by('-deadline')
             closedser = UserRequestsSerializer(closed, many=True)
-            return Response({'all_requests': serializer.data, 'open': openser.data, 'closed': closedser.data},
+            all_requests = open.count() + closed.count()
+            return Response({'all_requests': all_requests, 'open': openser.data, 'closed': closedser.data},
                             template_name="index.html")
             #return render(request, self.template_name, {'all_requests': serializer.data, 'open': openser.data, 'closed': closedser.data})
         else:
@@ -47,6 +47,48 @@ class IndexList(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+def ajaxcall(request):
+    if request.method == 'GET':
+        mode = request.GET['mode']
+        if mode == 'user':
+            user = request.user
+            open = UserRequests.objects.filter(user=user.username, closed=False)
+            openser = UserRequestsSerializer(open, many=True)
+            closed = UserRequests.objects.filter(user=user.username, closed=True)
+            closedser = UserRequestsSerializer(closed, many=True)
+            sum = open.count() + closed.count()
+            return JsonResponse({'open': openser.data, 'closed': closedser.data, 'sum': sum},
+                                content_type="application/json")
+        elif mode == 'all':
+            open = UserRequests.objects.filter(closed=False)
+            openser = UserRequestsSerializer(open, many=True)
+            closed = UserRequests.objects.filter(closed=True)
+            closedser = UserRequestsSerializer(closed, many=True)
+            sum = open.count() + closed.count()
+            return JsonResponse({'open': openser.data, 'closed': closedser.data, 'sum': sum},
+                                content_type="application/json")
+        elif mode == 'search':
+            title = request.GET['title']
+            try:
+                open = UserRequests.objects.filter(title=title, closed=False)
+            except UserRequests.DoesNotExist:
+                open = ""
+            openser = UserRequestsSerializer(open, many=True)
+            try:
+                closed = UserRequests.objects.filter(title=title, closed=True)
+            except UserRequests.DoesNotExist:
+                closed = ""
+            closedser = UserRequestsSerializer(closed, many=True)
+            sum = open.count() + closed.count()
+            return JsonResponse({'open': openser.data, 'closed': closedser.data, 'sum': sum},
+                                content_type="application/json")
+        else:
+            return HttpResponse("Invalid Mode Selection")
+    else:
+        return HttpResponse("Request method is not a GET")
+
 
 class Detail(APIView):
     template_name = "userrequests/detail.html"
@@ -79,7 +121,7 @@ class Detail(APIView):
         entry = self.get_object(pk)
         user = self.request.user
         serializer = UserRequestsSerializer(entry)
-        prev = UserRequests.objects.filter(user=user)
+        prev = UserRequests.objects.filter(user=user.username)
         prevser = UserRequestsSerializer(prev, many=True)
         list = self.get_keywords(entry.keywords)
         related = []
@@ -148,13 +190,12 @@ class Create(APIView):
         form = self.form_class(request.POST, request.FILES)
 
         if form.is_valid():
-            entry = form.save(commit=False)
             data = request.data
             serializer = UserRequestsSerializer(data=data, context={'request': request})
-            serializer.user = self.request.user  # use your own profile here
+            serializer.user = self.request.user.username  # use your own profile here
             serializer.file = self.request.FILES
             if serializer.is_valid():
-                entry = serializer.save(user=request.user)
+                entry = serializer.save(user=request.user.username)
                 return redirect('userrequests:detail', entry.id)
             error_message = serializer.errors
             #return render(request, self.template_name, {'form': form, 'error_message': error_message, 'entry': request.data})
@@ -189,20 +230,29 @@ class Update(APIView):
 
         if form.is_valid():
             serializer = UserRequestsSerializer(entry, data=request.data, context={'request': request})
-            serializer.user = self.request.user  # use your own profile here
+            serializer.user = self.request.user.username  # use your own profile here
             serializer.file = entry.file
 
             if serializer.is_valid():
-                entry = serializer.save(user=request.user)
+                entry = serializer.save(user=request.user.username)
                 return redirect('userrequests:detail', entry.id)
             error_message = serializer.errors
             #return render(request, self.template_name, {'form': form, 'error_message': error_message, 'entry': request.data})
             return Response({'form': form, 'error_message': error_message, 'entry': request.data},
                                           template_name="userrequests_form.html")
-            error_message = "Form Not Valid. Please Retry"
+        error_message = "Form Not Valid. Please Retry"
         return Response({'form': form, 'error_message': error_message, 'entry': request.data},
                         template_name="userrequests_form.html")
         #return render(request, self.template_name, {'form': form, 'error_message': error_message, 'entry': request.data})
+
+def closeRequest(request,pk):
+    if request.method == 'GET':
+        req = UserRequests.objects.get(pk=pk)
+        data = {'closed': True}
+        serializer = UserRequestsSerializer(req, data=data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return redirect('userrequests:reqdiscusion', req.pk)
 
 class Discussion(APIView):
 
@@ -229,14 +279,14 @@ class Discussion(APIView):
         req = UserRequests.objects.get(pk=pk)
 
         if message.is_valid():
-            data = {'message': request.POST['message'], 'requestid': req.pk, 'userreq': req.user.pk,
-                    'userpost': self.request.user}
-            notify = {'userid': req.user.pk, 'messageid': req.id}
+            data = {'message': request.POST['message'], 'requestid': req.pk, 'userreq': req.user,
+                    'userpost': self.request.user.username}
+            notify = {'user': req.user, 'messageid': req.id}
             serializer = MessagesSerializer(data=data, context={'request': request})
             serializer.userreq = req.user
             if serializer.is_valid():
                 serializer.save(userreq=req.user)
-                if req.user.pk != request.user.pk:
+                if req.user != request.user.username:
                     notifyserializer = MessageNotifySerializer(data=notify)
                     if notifyserializer.is_valid():
                         notifyserializer.save()

@@ -5,8 +5,11 @@ app_name = 'userrequests'
 
 urlpatterns = [
 
-   # requests/
+    # requests/
     url(r'^$', views.IndexList.as_view(), name='index'),
+
+    # requests/users
+    url(r'^users/$', views.ajaxcall, name='fetchd'),
 
     # requests/462/
     url(r'^(?P<pk>[0-9]+)/$', views.Detail.as_view(), name='detail'),
@@ -16,6 +19,9 @@ urlpatterns = [
 
     # requests/463/discussion/
     url(r'^(?P<pk>[0-9]+)/discussion/$', views.Discussion.as_view(), name='reqdiscusion'),
+
+    # requests/444/discussion/close
+    url(r'^(?P<pk>[0-9]+)/discussion/close$', views.closeRequest, name='closereq'),
 
     # requests/create/
     url(r'^create/$', views.Create.as_view(), name='create'),
