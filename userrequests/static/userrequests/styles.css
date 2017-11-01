@@ -10,8 +10,16 @@ body > h1{
     height: 1000px;
 }
 
+#horizontalnav{
+    width: 80%;
+    display: inline-block;
+}
+
+.container-fluid{
+    overflow: hidden;
+}
+
 #topcontainer{
-    width: 100%;
     height: 480px;
     !important;
     margin: auto;
@@ -39,7 +47,16 @@ body > h1{
     background: -moz-linear-gradient(#f1f1f1, #ffffff); /* For Firefox 3.6 to 15 */
     background: linear-gradient(#f1f1f1, #ffffff); /* Standard syntax */
     height: 100%;
-    min-width: 200px;
+    width: 20%;
+    min-width: 180px;
+}
+
+.enabled{
+    background: #67b6f1; /* For browsers that do not support gradients */
+    background: -webkit-linear-gradient(left, #d5f1f0, #ffffff, #d5f1f0); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(right, #d5f1f0, #ffffff, #d5f1f0); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(right, #d5f1f0, #ffffff, #d5f1f0); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(to right, #d5f1f0, #ffffff, #d5f1f0); /* Standard syntax */
 }
 
 .table-fixed tbody {
@@ -47,7 +64,7 @@ body > h1{
     overflow-y: auto;
     width: 100%;
 }
-.table-fixed tbody, .table-fixed tr, .table-fixed td, .table-fixed th {
+.table-fixed tbody, .table-fixed tr, .table-fixed td {
     display: block;
 }
 .table-fixed tbody td{
@@ -90,8 +107,7 @@ select{
 }
 
 td {
-
-    overflow-x: auto;
+    overflow-x: hidden;
 }
 tbody{
 	max-height:10px;
@@ -142,6 +158,8 @@ ul.breadcrumb {
     padding: 10px 16px;
     list-style: none;
     background-color: transparent;
+    position: relative;
+    left: 20px;
 }
 ul.breadcrumb li {
     display: inline;

@@ -1,9 +1,6 @@
 from django.contrib.auth.models import User
 from django import forms
-from django.forms import Textarea
 from .models import UserRequests, Messages
-from django.conf import settings
-
 
 
 class UserForm(forms.ModelForm):
@@ -27,8 +24,11 @@ class RequestForm(forms.ModelForm):
         model = UserRequests
         exclude = ['user', 'views', 'downloads', 'closed']
         widgets = {
-            'keywords': Textarea(attrs={'cols': 50, 'rows': 3, 'style': 'resize:none;'}),
-            'service_description': Textarea(attrs={'cols': 50, 'rows': 5, 'style': 'resize:none;'}),
+            'title': forms.TextInput(attrs={'placeholder': 'Give A Descriptive Title'}),
+            'keywords': forms.Textarea(attrs={'cols': 40, 'rows': 3, 'style': 'resize:none;',
+                                                    'placeholder': 'Provide Keywords Seperated With "," '}),
+            'service_description': forms.Textarea(attrs={'cols': 40, 'rows': 5, 'style': 'resize:none;',
+                                                    'placeholder': 'Give A Description About Your Request'}),
         }
 
 
