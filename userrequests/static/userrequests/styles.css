@@ -1,8 +1,25 @@
 body {
     background-color: white;
+    height: 100%;
 }
 body > h1{
     color: white;
+}
+
+footer{
+    margin-top: 20px;
+    background-color: #f2f2f2;
+    padding: 25px;
+    position: relative;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+footer > ul li+li:before{
+    padding: 8px;
+    color: black;
+    content: "|\00a0";
 }
 /* Set height of the grid so .sidenav can be 100% (adjust as needed) */
 
@@ -15,8 +32,15 @@ body > h1{
     display: inline-block;
 }
 
-.container-fluid{
-    overflow: hidden;
+.jumbotron{
+    margin-bottom: 0;
+    background: url('images/ocean2.jpg');
+    background-size: cover;
+}
+
+.navbar{
+    margin-bottom: 0;
+    background-color: #001c31;
 }
 
 #topcontainer{
