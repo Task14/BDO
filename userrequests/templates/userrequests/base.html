@@ -22,126 +22,112 @@
 </head>
 <body>
 
-    <div class="jumbotron">
-        <div class="container text-center">
-            <h1>Big Data Ocean</h1>
-            <p>She See The Sea</p>
-        </div>
-    </div>
 
-    <nav class="navbar navbar-inverse">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#menu">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="{% url 'userrequests:index' %}">BigDataOcean</a>
-            </div>
-            <div class="collapse navbar-collapse" id="menu">
-                <ul class="nav navbar-nav">
-                    <li
-                        {% if request.path == "/requests/" %}
-                           class="active"
-                        {% endif %}
-                    class="active">
-                        <a href="{% url 'userrequests:index' %}">Home
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#">
-                            Pooches
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#">
-                            Polles
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#">
-                            Edw
-                        </a>
-                    </li>
-                    <li class="dropdown
-                        {% if request.path == "/requests/create" or request.path == "/requests/" %}
-                           active
-                        {% endif %}">
-                        <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="reqmenu">
-                            <span class="caret"></span> Requests
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a href="{% url 'userrequests:create' %}">Create A Request</a>
-                            </li>
-                            <li>
-                                <a href="{% url 'userrequests:index' %}">Requests Data</a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-                <ul class="nav navbar-nav navbar-right">
-                    <li>
-                        <form class="navbar-form navbar-right" role="search" method="GET" action="#">
-                            <div class="form-group  is-empty">
-                                <input type="text" class="form-control border-input" placeholder="" name="q">
-                                <span class="material-input"></span>
-                                <span class="material-input"></span>
-                            </div>
-                            <button type="submit" class="btn btn-white btn-round btn-just-icon">
-                                <i class="material-icons">search</i>
-                                <div class="ripple-container">
-                                </div>
-                            </button>
-                        </form>
-                    </li>
-                    <li>
-                        {% if request.user.is_authenticated %}
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <span class="glyphicon glyphicon-user"></span>
-                                Hello {{ request.user.username }}
+        <nav class="navbar navbar-inverse">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#menu">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="{% url 'userrequests:index' %}">BigDataOcean</a>
+                </div>
+                <div class="collapse navbar-collapse" id="menu">
+                    <ul class="nav navbar-nav">
+                        <li
+                            {% if request.path == "/requests/" %}
+                               class="active"
+                            {% endif %}
+                        class="active">
+                            <a href="{% url 'userrequests:index' %}">Home
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                Pooches
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                Polles
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                Edw
+                            </a>
+                        </li>
+                        <li class="dropdown
+                            {% if request.path == "/requests/create" or request.path == "/requests/" %}
+                               active
+                            {% endif %}">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="reqmenu">
+                                <span class="caret"></span> Requests
                             </a>
                             <ul class="dropdown-menu">
                                 <li>
-                                    <a href="{% url 'userrequests:user-logout' %}">
-                                        <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
-                                        Logout
-                                    </a>
+                                    <a href="{% url 'userrequests:create' %}">Create A Request</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'userrequests:index' %}">Requests Data</a>
                                 </li>
                             </ul>
-                        {% else %}
-                            <a href="{% url 'userrequests:login' %}">
-                                <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>
-                                Login
-                            </a>
-                        {% endif %}
-                    </li>
-                </ul>
+                        </li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <form class="navbar-form navbar-right" role="search" method="GET" action="#">
+                                <div class="form-group  is-empty">
+                                    <input type="text" class="form-control border-input" placeholder="" name="q">
+                                    <span class="material-input"></span>
+                                    <span class="material-input"></span>
+                                </div>
+                                <button type="submit" class="btn btn-white btn-round btn-just-icon">
+                                    <i class="material-icons">search</i>
+                                    <div class="ripple-container">
+                                    </div>
+                                </button>
+                            </form>
+                        </li>
+                        <li>
+                            {% if request.user.is_authenticated %}
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    <span class="glyphicon glyphicon-user"></span>
+                                    Hello {{ request.user.username }}
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a href="{% url 'userrequests:user-logout' %}">
+                                            <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+                                            Logout
+                                        </a>
+                                    </li>
+                                </ul>
+                            {% else %}
+                                <a href="{% url 'userrequests:login' %}">
+                                    <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>
+                                    Login
+                                </a>
+                            {% endif %}
+                        </li>
+                    </ul>
+                </div>
             </div>
-        </div>
-    </nav>
+        </nav>
 
-        <!-- content when window is in it's original size : contains both horizontal and vertical navigations bars and the main content -->
-        <div class="container-fluid">
+            <!-- content when window is in it's original size : contains both horizontal and vertical navigations bars and the main content -->
+
+        <div class="jumbotron">
+            <div id="content" class="container">
 
                 {% block body %}
                 {% endblock %}
 
+            </div>
         </div>
 
+
 </body>
-<footer class="container-fluid text-center">
-    <ul>
-        <li style="display: inline">
-            <a href="#">About The Project</a>
-        </li>
-        <li style="display: inline">
-            <a href="#">The Team </a>
-        </li>
-        <li style="display: inline">
-            TF Copyright
-        </li>
-    </ul>
-</footer>
+
 </html>

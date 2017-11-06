@@ -1,19 +1,26 @@
-body {
-    background-color: white;
+html{
     height: 100%;
+}
+
+body{
+    background-color: white;
+    min-height: 100%;
+    height: 100%;
+    margin-bottom: 20px;
 }
 body > h1{
     color: white;
 }
 
+
 footer{
-    margin-top: 20px;
+    clear: both;
     background-color: #f2f2f2;
+    margin-top: 25px;
     padding: 25px;
-    position: relative;
+    position: absolute;
     bottom: 0;
-    left: 0;
-    right: 0;
+    width: 100%;
 }
 
 footer > ul li+li:before{
@@ -21,21 +28,39 @@ footer > ul li+li:before{
     color: black;
     content: "|\00a0";
 }
-/* Set height of the grid so .sidenav can be 100% (adjust as needed) */
 
-.row.content{
-    height: 1000px;
+.jumbotron > ul li+li:before{
+    padding: 8px;
+    color: white;
+    content: "|\00a0";
 }
 
-#horizontalnav{
-    width: 80%;
-    display: inline-block;
+.jumbotron > ul > li > a{
+    color: white;
+}
+
+/* Set height of the grid so .sidenav can be 100% (adjust as needed) */
+
+#about{
+    position: absolute;
+    top: 8px;
+    right: 16px;
+    color: white;
 }
 
 .jumbotron{
     margin-bottom: 0;
     background: url('images/ocean2.jpg');
     background-size: cover;
+    min-height: 100%;
+}
+
+#content{
+    border: 2px solid gray;
+    width: 80%;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.8);
+    padding-bottom: 20px;
 }
 
 .navbar{
@@ -47,11 +72,6 @@ footer > ul li+li:before{
     height: 480px;
     !important;
     margin: auto;
-    background-color: white;
-}
-
-#central{
-    background-color: white;
 }
 
 #tabs{

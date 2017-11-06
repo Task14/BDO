@@ -8,7 +8,7 @@
 {% endblock %}
 {% block body %}
 
-<div id="container">
+
     <ul class="breadcrumb">
         <li><a href="#">Requests</a></li>
     </ul>
@@ -17,7 +17,7 @@
     <!-- Displays the Requests Of The Logged In User If Any -->
     {% if request.user.is_authenticated %}
         {%  if all_requests > 0 %}
-            <h1>On Demand Data Services</h1>
+            <h2>On Demand Data Services</h2>
 
             <input type="text" placeholder=" Search For A Request" id="title">
 
@@ -35,7 +35,7 @@
 
             <div id="topcontainer" class="container-fluid">
                 <div id="row1" >
-                    <div id="central" class="col-sm-10 col-sm-offset-1">
+                    <div id="central" class="col-sm-8 col-sm-offset-2">
                         <div id="usabilities">
                             <ul class="nav nav-tabs">
                                 <li class="active"><a data-toggle="tab" href="#open" id="opentab">Open <span id="spo" class="badge">{{ open|length }}</span></a></li>
@@ -122,8 +122,81 @@
                 </div>
             </div>
 
-
             <br>
+
+            <div id="list" class="col-sm-8 col-sm-offset-2" style="background: transparent">
+                <div id="usabilities">
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a data-toggle="tab" href="#openn" id="opentab">Open <span id="spoo" class="badge">{{ open|length }}</span></a></li>
+                        <li><a data-toggle="tab" href="#closedd" id="closedtab">Closed <span id="spcc" class="badge">{{ closed|length }}</span></a></li>
+                    </ul>
+                </div>
+                <div id="data">
+                    <div id="tabs" class="tab-content">
+                        <div id="openn" class="tab-pane fade in active">
+                            {% for entry in open %}
+                                {% if forloop.counter <= 10 %}
+                                    <div class="entry" style="background-color: white">
+                                        <div class="secondary">
+                                            <a href="{% url 'userrequests:detail' entry.id %}">
+                                                <img src="{{ entry.file }}" width="100px" height="100px" alt="No Image Has Been Uploaded" style="color: brown; float: left; margin-right: 40px;">
+                                            </a>
+                                        </div>
+                                        <div class="primary">
+                                            <a href="{% url 'userrequests:detail' entry.id %}">
+                                                <h4 class="text-left">{{ entry.title }}</h4>
+                                            </a>
+                                            <hr>
+                                            <p>keywords: <span class="btn-info">{{ entry.keywords }}</span></p>
+                                        </div>
+                                        <div class="secondary">
+                                            <p>Posted By: {{ entry.user }}</p>
+                                            <p>On: {{ entry.deadline }}</p>
+                                        </div>
+                                        <div class="secondary">
+                                            <p>{{ entry.views }} views</p>
+                                            <p>{{ entry.downloads }} downloads</p>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <div id="closedd" class="tab-pane fade">
+                            {% for entry in closed %}
+                                {% if forloop.counter <= 10 %}
+                                    <div class="entry" style="background-color: white">
+                                        <div class="secondary">
+                                            <a href="{% url 'userrequests:detail' entry.id %}">
+                                                <img src="{{ entry.file }}" width="100px" height="100px" alt="No Image Has Been Uploaded" style="color: brown; float: left; margin-right: 40px;">
+                                            </a>
+                                        </div>
+                                        <div class="primary">
+                                            <a href="{% url 'userrequests:detail' entry.id %}">
+                                                <h4 class="text-left">{{ entry.title }}</h4>
+                                            </a>
+                                            <hr>
+                                            <p>keywords: <span class="btn-info">{{ entry.keywords }}</span></p>
+                                        </div>
+                                        <div class="secondary">
+                                            <p>Posted By: {{ entry.user }}</p>
+                                            <p>On: {{ entry.deadline }}</p>
+                                        </div>
+                                        <div class="secondary">
+                                            <p>{{ entry.views }} views</p>
+                                            <p>{{ entry.downloads }} downloads</p>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div id="paging">
+                    <ul id="upaging" class="pagination">
+                    </ul>
+                </div>
+            </div>
+
 
             <div id="create">
                 <p>Can't Find Anything Relevant?</p>
@@ -161,8 +234,6 @@
             </button>
         </a>
     {% endif %}
-</div>
-
 </div>
 
 {% endblock %}
