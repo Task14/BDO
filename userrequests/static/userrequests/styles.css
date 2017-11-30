@@ -58,6 +58,7 @@ footer > ul li+li:before{
 #content{
     border: 2px solid gray;
     width: 80%;
+    min-height: 80%;
     border-radius: 10px;
     background: rgba(255,255,255,0.8);
     padding-bottom: 20px;
@@ -74,11 +75,18 @@ footer > ul li+li:before{
     margin: auto;
 }
 
+#list{
+    background: transparent;
+    width: 70%;
+    float: none;
+}
+
+/*
 #tabs{
     height: 450px;
     overflow: auto;
 }
-
+*/
 #prev {
   border-right: solid 1px #000000;
 }
@@ -125,12 +133,24 @@ table, td {
   	background: white;
 }
 
+#data{
+      border: 2px solid transparent;
+      border-radius: 10px;
+      background-image: linear-gradient(to right, rgba(0,0,0,0.3), rgba(0,0,0,0.3)), linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(255,255,255,0)), linear-gradient(to left, rgba(0,0,0,0), rgba(255,255,255,0)), linear-gradient(to top, rgba(0,0,0,0), rgba(0,0,0,0.3));
+      background-origin: border-box;
+      background-size: 100% 2px, 2px 100%, 100% 2px, 2px 100%;
+      background-position: top left, top right, bottom right, bottom left;
+      background-repeat: no-repeat;
+}
+
 .primary{
     width: 40%;
+    display: inline-block;
 }
 
 .secondary{
     width: 20%;
+    display: inline-block;
 }
 
 .btn-info {
@@ -162,9 +182,27 @@ tbody{
     background-color: #99FFCC;
 }
 
+.entry:hover{
+    background-color: #d5f1f0;
+}
+
+#file{
+    width: 100px;
+    height: 100px;
+    color: brown;
+    float: left;
+    margin-right: 40px;
+    margin-left: 20px;
+    margin-top:20px;
+}
+
 .table-wrapper{
 	overflow-y: auto;
 	max-height:300px;
+}
+
+.panel{
+    background: rgba(255,255,255,0.5);
 }
 
 #prevt{
@@ -225,5 +263,7 @@ ul.breadcrumb li a:hover {
 
 /* On small screens, set height to 'auto' for the grid */
 @media screen and (max-width: 767px) {
-  .row.content {height: auto;}
+  .row.content {
+      height: auto;
+  }
 }
