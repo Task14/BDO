@@ -1,24 +1,84 @@
+/* usage:
+    paginate(mode) :
+        creates the paging list for the data.
+        mode { open / closed } for which data should make the pagination
+
+    call( mode, title, sector, paginate ):
+        function for filling list of data.
+        mode { user, all, search } refers to which data should the list include
+        title is the title which the user searches - associated with search mode
+        sector is in which page of results the user is
+        paginate { true / false } if pagination is needed eg. when going from 'all' to 'user'
+
+    populate2(div, data, sector, perpage):
+        fill the list with data.
+        div refers to the element that will show the data
+        data is the list of elements to be displayed
+        sector is the current page in the paging where the user is so that it will display the right range of data
+        perpage is the amount of entries per page.
+
+*/
+
+var sectionopen = 0;
+var sectionclosed = 0;
+var hasmoreopen = false;
+var hasmoreclosed = false;
+var title = '';
+
+function initialize(){
+    sectionopen = 0;
+    sectionclosed = 0;
+    hasmoreopen = false;
+    hasmoreclosed = false;
+}
+
+function isactive(element){
+    element = '#' + element;
+    return $(element).hasClass("active");
+}
+
 $(document).ready(function() {
 
-    paginate("open");
+    call("all", '', 1, true);
+    //paginate("open");
+
 
     $('#all').click(function(e){
-        call('all', '', 1, true);
-        document.getElementById("all").setAttribute("class", "btn btn-default active");
-        document.getElementById("user").setAttribute("class", "btn btn-default");
+        if( !isactive('all') ){
+            initialize();
+            title = '';
+            call('all', '', 1, true);
+            document.getElementById("all").setAttribute("class", "btn btn-default active");
+            document.getElementById("user").setAttribute("class", "btn btn-default");
+            document.getElementById("openus").setAttribute("class", "active");
+            document.getElementById("closedus").setAttribute("class", "");
+        }
     });
     $('#user').click(function(e){
-        call('user', '', 1, true);
-        document.getElementById("user").setAttribute("class", "btn btn-default active");
-        document.getElementById("all").setAttribute("class", "btn btn-default");
+        if( !isactive('user') ) {
+            initialize();
+            title = '';
+            call('user', '', 1, true);
+            document.getElementById("user").setAttribute("class", "btn btn-default active");
+            document.getElementById("all").setAttribute("class", "btn btn-default");
+            document.getElementById("openus").setAttribute("class", "active");
+            document.getElementById("closedus").setAttribute("class", "");
+        }
     });
     $('#search').click(function(e){
-        var title = document.getElementById('title').value;
+        initialize();
+        title = document.getElementById('title').value;
         call('search', title, 1, true);
-        paginate("open");
+        //paginate("open");
+        document.getElementById("user").setAttribute("class", "btn btn-default");
+        document.getElementById("all").setAttribute("class", "btn btn-default");
+        document.getElementById("openus").setAttribute("class", "active");
+        document.getElementById("closedus").setAttribute("class", "");
+        document.getElementById("openn").setAttribute("class", "tab-pane fade in active");
+        document.getElementById("closedd").setAttribute("class", "tab-pane fade");
     });
     $("#title").keyup(function(event){
-        if (event.keyCode === 13){
+        if (event.keyCode === 13){                                      // when pressing enter also
             $("#search").click();
         }
     });
@@ -28,37 +88,113 @@ $(document).ready(function() {
     $("#closedtab").click(function(e){
        paginate("closed");
     });
-    $('#next').click(function(e){
-        e.preventDefault();
-        var sector = $('ul.pagination li.active').next();
-        console.log(sector.text());
-        sector.removeClass('active').next().addClass('active');
-        call('all', '', sector.text());
+    $("#opentabl").click(function(e){
+        if( !isactive('openus') ) {
+            paginate("open");
+            var mode;
+            if (isactive('all')) {
+                mode = "all";
+            }
+            else if (isactive('user')) {
+                mode = "user";
+            }
+            else {
+                mode = "search";
+            }
+            call(mode, title, 1, false);
+            sectionclosed = 0;
+        }
     });
-    $('#prev').click(function(e){
-        e.preventDefault();
-        var sector = $('li.active').prev();
-                console.log(sector.text());
-
-        $('li.active').removeClass('active').prev().addClass('active');
-        call('all', '', sector.text());
+    $("#closedtabl").click(function(e){
+        if( !isactive('closedus') ) {
+            paginate("closed");
+            var mode;
+            if (isactive('all')) {
+                mode = "all";
+            }
+            else if (isactive('user')) {
+                mode = "user";
+            }
+            else {
+                mode = "search";
+            }
+            call(mode, title, 1, false);
+            sectionopen = 0;
+        }
     });
     $('#paging').on('click', 'a', function(e){
         e.preventDefault();
         var sector = $(this);
-        var mode;
-        sector.parent().siblings().removeClass('active').end().addClass('active');
+        var parent = sector.parent().attr('id');
+        var mode, tab, hasmore, section;
+
+        if ( parent != 'next' && parent != 'previous' ){
+            sector.parent().siblings().removeClass('active').end().addClass('active');
+        }
+        else{
+            if( isactive('openus') ){
+                tab = 'open';
+                hasmore = hasmoreopen;
+                section = sectionopen;
+            }
+            else{
+                tab = 'closed';
+                hasmore = hasmoreclosed;
+                section = sectionclosed;
+            }
+            if( parent == 'previous' ){
+                if(section == 0){
+                    sector.parent().siblings().removeClass('active');
+                    sector.parent().next().addClass('active');
+                    sector = sector.parent().next().children();
+                }
+                else{
+                    if(tab == 'open'){
+                        sectionopen -=1;
+                        paginate('open');
+                    }
+                    else{
+                        sectionclosed -=1;
+                        paginate('closed');
+                    }
+                    sector = $('#next').prev().children();
+                    sector.parent().siblings().removeClass('active');
+                    sector.parent().addClass('active');
+                }
+            }
+            else{
+                if(!hasmore){
+                    sector.parent().siblings().removeClass('active');
+                    sector.parent().prev().addClass('active');
+                    sector = sector.parent().prev().children();
+                }
+                else{
+                    if(tab == 'open'){
+                        sectionopen +=1;
+                        paginate('open');
+                    }
+                    else{
+                        sectionclosed +=1;
+                        paginate('closed');
+                    }
+                    sector = $('#previous').next().children();
+                    //sector.parent().siblings().removeClass('active');                 when paging active is always the first
+                    //sector.parent().addClass('active');
+                }
+            }
+        }
         console.log(" click on "+sector.text());
-        if ($("#all").hasClass("active")){
+        console.log(sector.parent().attr('id'));
+        if( isactive('all') ){
             mode = "all";
         }
-        else if($("#user").hasClass("active")){
+        else if( isactive('user') ){
             mode = "user";
         }
         else{
             mode = "search";
         }
-        call(mode, '', sector.text(), false);
+        call(mode, title, sector.text(), false);
     });
 });
 
@@ -75,14 +211,16 @@ function call(mode, title, sector, call_for_paginate){
             var closed = data.closed;
             var sum = data.sum;
 
-            var optable = document.getElementById('otbody');
-            var cltable = document.getElementById('ctbody');
 
             var opdiv = document.getElementById('openn');
             var cldiv = document.getElementById('closedd');
 
             opdiv.innerHTML = "";
             cldiv.innerHTML = "";
+            /*
+            var optable = document.getElementById('otbody');
+            var cltable = document.getElementById('ctbody');
+
 
             rows = optable.rows.length;
             if( rows > 0 ){
@@ -96,6 +234,7 @@ function call(mode, title, sector, call_for_paginate){
                     cltable.deleteRow(i);
                 }
             }
+            */
             //document.getElementById('demo').innerHTML = closed.length;
             if( sum != "0" ){
                 sumheader = document.getElementById('ressum');
@@ -119,37 +258,37 @@ function call(mode, title, sector, call_for_paginate){
                 }
 
                 if( open != "" ){
-                    document.getElementById('spo').textContent = open.length;
+                    //document.getElementById('spo').textContent = open.length;
                     document.getElementById('spoo').textContent = open.length;
                     console.log("POOCHES 1");
-                    populate(optable, open);
-                    populate2(opdiv, open, sector, 10);
+                    //populate(optable, open);
+                    populate2(opdiv, open, sector, 2);
                 }
                 else{
-                    document.getElementById('spo').textContent = "0";
+                    //document.getElementById('spo').textContent = "0";
                     document.getElementById('spoo').textContent = "0";
                     console.log("POOCHES 2");
                 }
                 if( closed != "" ){
-                    document.getElementById('spc').textContent = closed.length;
+                    //document.getElementById('spc').textContent = closed.length;
                     document.getElementById('spcc').textContent = closed.length;
                     console.log("POOCHES 3");
-                    populate(cltable, closed);
-                    populate2(cldiv, closed, sector, 10);
+                    //populate(cltable, closed);
+                    populate2(cldiv, closed, sector, 2);
                 }
                 else{
-                    document.getElementById('spc').textContent = "0";
+                    //document.getElementById('spc').textContent = "0";
                     document.getElementById('spcc').textContent = "0";
                     console.log("POOCHES 4");
                 }
             }
             else{
                 sumheader = document.getElementById('ressum').innerHTML = "No Requests Were Found - Please Try Again";
-                document.getElementById('spo').textContent = "0";
-                document.getElementById('spc').textContent = "0";
+                //document.getElementById('spo').textContent = "0";
+                //document.getElementById('spc').textContent = "0";
                 document.getElementById('spoo').textContent = "0";
                 document.getElementById('spcc').textContent = "0";
-                document.getElementById('allheader').innerHTML = 'No Requests Are Created Yet!';
+                //document.getElementById('allheader').innerHTML = 'No Requests Are Created Yet!';
             }
             console.log("PAGINATE " + call_for_paginate);
             if( call_for_paginate == true ){
@@ -180,10 +319,14 @@ function populate2(div, data, sector, perpage){
             a.setAttribute("href", entry.id + "/");
             img = document.createElement('img');
             img.setAttribute("src", entry.file);
+            img.setAttribute("id", "file");
+            img.setAttribute("alt", "No File Has Been Uploaded");
+            /*
             img.setAttribute("width","100px");
             img.setAttribute("height","100px");
             img.setAttribute("alt","No Image Has Been Uploaded");
             img.setAttribute("style","color: brown; float: left; margin-right: 40px;");
+            */
             a.appendChild(img);
             datadiv.appendChild(a);
             entrydiv.appendChild(datadiv);
@@ -224,7 +367,7 @@ function populate2(div, data, sector, perpage){
             datadiv.appendChild(p);
             entrydiv.appendChild(datadiv);
             // fourth td
-            datadiv = document.createElement('td');
+            datadiv = document.createElement('div');
             datadiv.setAttribute("class","secondary");
             p = document.createElement('p');
             text = document.createTextNode(entry.views + " views");
@@ -311,22 +454,25 @@ function populate(table, data){
 }
 
 function paginate(mode){
+    var sum, section;
     if( mode == "open" ){
-        var sum = document.getElementById("spoo").innerHTML;
+        sum = document.getElementById("spoo").innerHTML;
+        section = sectionopen;
     }
     else{
-        var sum = document.getElementById("spcc").innerHTML;
+        sum = document.getElementById("spcc").innerHTML;
+        section = sectionclosed;
     }
     sum = parseInt(sum);
     var paging = document.getElementById("upaging");
-    var range = sum/10;
+    var range = sum/2;
     var li, a, text;
 
     paging.innerHTML = "";
     paging.setAttribute("class", "pagination");
 
     li = document.createElement("li");
-    li.setAttribute("id","prev");
+    li.setAttribute("id","previous");
     a = document.createElement("a");
     a.innerHTML = "&laquo;";
     a.setAttribute("href", "#");
@@ -334,10 +480,25 @@ function paginate(mode){
     paging.appendChild(li);
 
     console.log(" Sum " + sum );
+    var i = section*5;
+    var hasmore = false;
 
-    for(var i=0; i<=range; i++){
+    if( i+5 < range ) {
+        hasmore = true;
+    }
+    if( mode == "open" ){
+        hasmoreopen = hasmore;
+    }
+    else{
+        hasmoreclosed = hasmore;
+    }
+
+    for(i; i<range; i++){
+        if( i == (section+1)*5 ){
+            break;
+        }
         li = document.createElement("li");
-        if(i == 0){
+        if((i % 5) == 0){                                               // first page of list
             li.setAttribute("class","active");
         }
         a = document.createElement("a");
