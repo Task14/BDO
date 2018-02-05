@@ -23,7 +23,7 @@
             </h4>
             <br>
             <h4 style="display: inline">{{ messages|length }} Answers</h4>
-            <h4 style="display: inline; float: right; ">Original Post By: {{ entry.user.username }}</h4>
+            <h4 style="display: inline; float: right; ">Original Post By: {{ entry.user }}</h4>
             {% if messages|length > 0%}
                 <div id="messagetable">
                     <table id='messaget' class="table table-responsive">
